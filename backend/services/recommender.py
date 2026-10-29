@@ -4,7 +4,7 @@ import logging
 import re
 from dataclasses import asdict, dataclass
 
-from services.job_roles import infer_screening_role
+from services.job_roles import infer_screening_role, role_relevance
 from services.matching_model import predict_match_score
 from services.model import predict_role
 from services.preprocessing import basic_clean_text
@@ -134,8 +134,9 @@ def recommend_from_resume_and_job(
         logger.warning("Role classifier failed, using keyword fallback: %r", error)
         role_predictions = fallback_role_predictions(skill_gap)
         model_sources["role"] = "fallback"
+    job_role = infer_screening_role(job_text)
     top_role = str(role_predictions[0]["role"]) if role_predictions else "unknown"
-    role_confidence = float(role_predictions[0]["confidence"]) if role_predictions else 0.0
+    role_confidence = role_relevance(job_role, role_predictions)
 
     try:
         match_result = predict_match_score(resume_text, job_text)
@@ -145,7 +146,7 @@ def recommend_from_resume_and_job(
         match_result = fallback_match_score(resume_text, job_text, skill_gap.skill_match_score)
         model_sources["match"] = "fallback"
 
-    screening_role = infer_screening_role(job_text) or normalize_role(top_role)
+    screening_role = job_role or normalize_role(top_role)
     try:
         screening_result = predict_screening(
             skills=skills_to_text(skill_gap.resume_skills),
@@ -163,7 +164,9 @@ def recommend_from_resume_and_job(
 
     match_probability = float(match_result["match_probability"])
     skill_match_score = float(skill_gap.skill_match_score)
-    screening_score = float(screening_result["ai_score"]) / 100.0
+    # The screening models judge overall candidate strength (experience, education...) but never saw
+    # people applying outside their field, so their score only counts as far as the job's skills are present.
+    screening_score = float(screening_result["ai_score"]) / 100.0 * skill_match_score
 
     score_breakdown = {
         "match_probability_component": round(match_probability * active_weights["match_probability"] * 100, 4),
