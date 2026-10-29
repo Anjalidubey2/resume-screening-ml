@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: resume-screening-api
+    runtime: python
+    plan: free
+    # No rootDir: Render hides files outside the root directory, and the models live in ../models.
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: uvicorn --app-dir backend main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.11
+      # Replace with your own Vercel frontend URL after deploying it.
+      - key: BACKEND_CORS_ORIGINS
+        value: https://your-frontend.vercel.app
