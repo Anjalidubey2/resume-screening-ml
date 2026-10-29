@@ -95,10 +95,12 @@ Charts and metrics: `notebooks/01_data_exploration.ipynb` and `notebooks/02_mode
 
 | Model | Metric | Result |
 |---|---|---|
-| Role classifier | Test accuracy / macro F1 | [fill from `outputs/role_classifier_metrics.csv`] |
-| Matching model (after English retraining) | Accuracy / F1 / ROC-AUC | [fill from `outputs/matching_model_metrics.csv`] |
-| Screening decision | Accuracy / F1 / ROC-AUC | [fill from `outputs/screening_model_metrics.csv`] |
-| AI score regressor | MAE / R² | [fill from `outputs/screening_model_metrics.csv`] |
+| Matching model (retrained on English pairs) | Accuracy / F1 / ROC-AUC | **75.2% / 76.5% / 82.6%** on 1,599 unseen pairs (3-fold CV: 72.6% / 73.5% / 80.3%) — [`outputs/matching_model_metrics.csv`](outputs/matching_model_metrics.csv) |
+| Role classifier | Test accuracy / macro F1 | 71.43% / 67.07% (original training on dataset 1) |
+| Screening decision | Accuracy / F1 / ROC-AUC | 94.00% / 96.15% / 99.85% (original training on dataset 3) |
+| AI score regressor | MAE / R² | 2.62 / 96.56% (original training on dataset 3) |
+
+**Live ranking check** (8 demo resumes × 4 job descriptions on the deployed API): the matching candidate ranks **#1 for every job** with a *Good Fit* score of 71.7–83.2, and the accountant and HR-manager resumes rank in the bottom three.
 
 ## Testing
 
@@ -116,7 +118,7 @@ Every upload to GitHub also runs all tests — including the ML-model and rankin
 |---|---|
 | Models were trained with scikit-learn 1.8 / NumPy 2 but `requirements.txt` installed 1.3 / 1.26, so **every ML model silently failed** and backup formulas were used | Corrected versions; added `check_models.py`; the UI now labels any backup-formula score |
 | Text was preprocessed differently at prediction time than during training | Preprocessing locked to the training configuration |
-| Matching model learned from **Russian** text but screens English resumes | Added a pipeline that retrains it on 8,000 English resume–job pairs (`retrain_models.bat`) |
+| Matching model learned from **Russian** text but screens English resumes | Retrained on 7,993 English resume–job pairs: accuracy 67.3% → 75.2%, ROC-AUC 73.3% → 82.6% |
 | Screening model received a job role it had never seen (e.g. "information technology") | Role now inferred from the job description (`job_roles.py`) |
 | False skill matches ("security", "iOS", "Ann", "spring", "lambda") and missing skills (SIEM, MLOps, testing, REST APIs) | Skill dictionary cleaned and extended |
 | ~20 MB of models reloaded for every resume | Models load once per server start |
