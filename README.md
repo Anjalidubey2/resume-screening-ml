@@ -1,5 +1,7 @@
 # AI Resume Screening System
 
+[![Tests](https://github.com/Anjalidubey2/resume-screening-ml/actions/workflows/tests.yml/badge.svg)](https://github.com/Anjalidubey2/resume-screening-ml/actions/workflows/tests.yml)
+
 Upload resumes and a job description — the system ranks every candidate out of 100, explains the score with matched and missing skills, and learns from recruiter feedback.
 
 Built with **Python, scikit-learn, FastAPI and React**.
@@ -28,8 +30,10 @@ Four "judges" score every resume:
 |---|---|---|---|
 | Matching model | Does this resume fit this job? | Character TF-IDF pair features + Logistic Regression | 35% |
 | Skill engine | Which required skills are present? | 65 skills with synonyms, whole-word matching | 25% |
-| Screening model | Would a recruiter hire this profile? | Logistic Regression (hire probability) + Random Forest (AI score 0–100) | 25% |
-| Role classifier | Which field is this person from? | Word TF-IDF + calibrated Linear SVM, 24 categories | 15% |
+| Screening model | Is this a strong candidate *for this job*? | Logistic Regression (hire probability) + Random Forest (AI score 0–100), **× skill match** | 25% |
+| Role classifier | Is this person from a field that suits the job? | Word TF-IDF + calibrated Linear SVM, 24 categories; only job-relevant fields count | 15% |
+
+Two adjustments keep unrelated profiles from scoring high: the screening model judges overall strength (experience, education) but never saw people applying outside their field, so its score is **multiplied by skill match**; and the role judge only counts fields that suit the job (IT / engineering for tech roles), so being confidently "HR" does not help for a data-science job.
 
 **Fit levels:** 85–100 Strong · 70–84 Good · 55–69 Moderate · 0–54 Weak
 
@@ -83,6 +87,8 @@ npm run dev
 
 Then double-click **`retrain_models.bat`**. It downloads dataset 2, cleans all datasets, **backs up the current models**, retrains every model whose data is present, writes metrics to `outputs/`, and checks the new models. Restart the backend afterwards.
 
+**No Windows PC needed:** on GitHub open **Actions → Retrain matcher (English) → Run workflow**. GitHub downloads dataset 2, retrains the matching model, runs every test, and saves the new model to the repository only if all tests pass (Render then redeploys automatically).
+
 Charts and metrics: `notebooks/01_data_exploration.ipynb` and `notebooks/02_model_evaluation.ipynb`.
 
 ## Results
@@ -102,6 +108,8 @@ venv\Scripts\python -m pytest          # unit, model and API tests
 venv\Scripts\python check_models.py    # confirms every ML model loads and predicts
 ```
 
+Every upload to GitHub also runs all tests — including the ML-model and ranking tests — on GitHub Actions (badge at the top).
+
 ## What I improved
 
 | Problem in the original | Fix |
@@ -114,6 +122,8 @@ venv\Scripts\python check_models.py    # confirms every ML model loads and predi
 | ~20 MB of models reloaded for every resume | Models load once per server start |
 | CSV export saved only on the server; launch scripts used another PC's paths | Browser download; portable `setup` / `run` / `retrain` scripts |
 | Layout scrolled sideways on projector screens; empty-filter message was misleading | Responsive breakpoint and clearer messages |
+| The hybrid score ranked an **HR manager #2 for a Data Scientist job** (the screening model rewarded years of experience; the role judge rewarded being confidently *any* field) | Screening score × skill match; role judge counts only job-relevant fields. Tested on 4 jobs × 8 resumes |
+| ML tests could not run on a Windows PC with Smart App Control | GitHub Actions runs every test (incl. ML and ranking tests) on each upload, plus a one-click retraining workflow |
 | No tests, notebooks or documentation | pytest suite, two notebooks, report, viva guide, demo script, sample resumes |
 
 ## Project structure
