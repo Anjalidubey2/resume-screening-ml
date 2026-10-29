@@ -12,7 +12,7 @@ from conftest import JOB_DESCRIPTIONS_DIR, SAMPLE_RESUMES_DIR  # noqa: E402
 from services.matching_model import predict_match_score  # noqa: E402
 from services.model import predict_role  # noqa: E402
 from services.parser import extract_text_from_bytes  # noqa: E402
-from services.recommender import recommend_as_dict  # noqa: E402
+from services.recommender import recommend_as_dict, warm_up_models  # noqa: E402
 from services.screening_model import predict_screening  # noqa: E402
 
 UNRELATED_RESUME = "Head chef with 10 years of kitchen management, menu planning, food safety and catering."
@@ -34,6 +34,10 @@ def rank_samples(job: str) -> list[str]:
             text = extract_text_from_bytes(path.read_bytes(), path.name).text
             scores[path.name] = recommend_as_dict(resume_text=text, job_text=job_text)["final_score"]
     return sorted(scores, key=scores.get, reverse=True)
+
+
+def test_startup_warm_up_loads_every_model():
+    assert warm_up_models() == {"role": "loaded", "match": "loaded", "screening": "loaded"}
 
 
 def test_every_trained_model_loads_and_predicts(sample_resume, sample_job):
