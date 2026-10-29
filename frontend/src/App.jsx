@@ -76,6 +76,32 @@ function PieChart({ score }) {
   );
 }
 
+const BREAKDOWN_PARTS = [
+  ["match_probability_component", "Match", "35% x resume-job match probability"],
+  ["skill_match_component", "Skills", "25% x share of the job's skills found"],
+  ["screening_score_component", "Screening", "25% x AI score x skill match"],
+  ["role_confidence_component", "Role", "15% x probability the person's field suits the job"],
+];
+
+function ScoreBreakdown({ breakdown, total }) {
+  if (!breakdown) return null;
+
+  return (
+    <p className="score-breakdown">
+      <span>Score built from:</span>
+      {BREAKDOWN_PARTS.map(([key, label, hint], index) => (
+        <span key={key} title={hint}>
+          {index > 0 && "+ "}
+          {label} <strong>{Number(breakdown[key] || 0).toFixed(1)}</strong>
+        </span>
+      ))}
+      <span>
+        = <strong>{Number(total).toFixed(1)}</strong>
+      </span>
+    </p>
+  );
+}
+
 function SkillBars({ matched = [], missing = [], extra = [] }) {
   const values = [
     { label: "Matched", value: matched.length, tone: "good" },
@@ -184,6 +210,7 @@ function ResultCard({ result, rank, onFeedback, feedbackStatus }) {
       </div>
 
       <ModelSources sources={result.model_sources} />
+      <ScoreBreakdown breakdown={result.score_breakdown} total={result.final_score} />
 
       <div className="result-grid">
         <div className="chart-panel">
