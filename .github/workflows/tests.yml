@@ -21,7 +21,8 @@ jobs:
           cache: pip
           cache-dependency-path: backend/requirements.txt
       - name: Install libraries
-        run: pip install -r requirements.txt pytest==9.2.0 httpx==0.28.1
+        # httpx 0.28 removed the "app" argument that this FastAPI/Starlette version's TestClient uses.
+        run: pip install -r requirements.txt pytest==9.2.0 httpx==0.27.2
       - name: Check every model loads and predicts
         run: python check_models.py
       - name: Run all tests
