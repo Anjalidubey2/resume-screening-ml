@@ -5,10 +5,10 @@ import re
 from dataclasses import asdict, dataclass
 
 from services.job_roles import infer_screening_role, role_relevance
-from services.matching_model import predict_match_score
-from services.model import predict_role
+from services.matching_model import load_matching_model, predict_match_score
+from services.model import load_role_classifier, predict_role
 from services.preprocessing import basic_clean_text
-from services.screening_model import predict_screening
+from services.screening_model import load_screening_models, predict_screening
 from services.skills import calculate_skill_gap, skill_terms, skills_to_text
 
 logger = logging.getLogger(__name__)
@@ -43,6 +43,27 @@ class HybridRecommendation:
     screening_role: str
     highlight_terms: list[str]
     model_sources: dict[str, str]
+
+
+def warm_up_models() -> dict[str, str]:
+    """Load every model into memory now so the first resume is scored quickly.
+
+    A model that fails to load is reported but not raised: the API still starts and
+    labels that part of each result as a backup formula.
+    """
+    status: dict[str, str] = {}
+    for name, loader in (
+        ("role", load_role_classifier),
+        ("match", load_matching_model),
+        ("screening", load_screening_models),
+    ):
+        try:
+            loader()
+            status[name] = "loaded"
+        except Exception as error:
+            logger.warning("Could not load the %s model: %r", name, error)
+            status[name] = f"failed: {error!r}"
+    return status
 
 
 def fit_level_from_score(score: float) -> str:
