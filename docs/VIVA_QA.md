@@ -19,7 +19,7 @@ No. It is a decision-support tool. It shortlists and explains; a human makes the
 ## Data and NLP
 
 **5. What datasets did you use?**
-Three: (1) a Kaggle dataset of about 2,400 resumes in 24 job categories for the role classifier; (2) resume–job pairs labelled fit / no fit for the matching model — the original model learned from a Russian dataset, and I added a pipeline to retrain it on 8,000 English pairs from Hugging Face; (3) a Kaggle dataset of candidate profiles with hire/reject decisions for the screening model.
+Three: (1) a Kaggle dataset of about 2,400 resumes in 24 job categories for the role classifier; (2) resume–job pairs labelled fit / no fit for the matching model — the original model learned from a Russian dataset, so I retrained it on about 8,000 English pairs from Hugging Face; (3) a Kaggle dataset of candidate profiles with hire/reject decisions for the screening model.
 
 **6. What preprocessing do you do?**
 Lower-case the text, remove emails, phone numbers and links, protect tech words like C++ and C#, remove punctuation, and remove very common words like "the" and "and".
@@ -58,6 +58,9 @@ When a model memorises the training data and fails on new data. We avoid it by t
 
 **16. Why does the screening model show ~94% accuracy when the others are lower?**
 Dataset 3 appears to be computer-generated, so its patterns are very clean and easy to learn. On real hiring data the accuracy would likely be lower. I mention this as a limitation.
+
+**16a. How good is your matching model?**
+On 1,599 resume–job pairs it never saw during training: 75% accuracy, 77% F1 and 0.83 ROC-AUC (3-fold cross-validation gives similar numbers, about 73% accuracy and 0.80 ROC-AUC, so it isn't overfitting). The original model, trained on Russian data, got 67% accuracy and 0.73 ROC-AUC. In the live test, the right candidate got a match probability of 0.90–0.96 and the accountant 0.02–0.04.
 
 **17. What does "calibrated" mean for the SVM?**
 A Linear SVM only gives a raw score, not a probability. Calibration (CalibratedClassifierCV) converts the score into a probability between 0 and 1, which we need for the "role confidence" part of the final score.
@@ -110,7 +113,7 @@ Recruiter clicks (Good Match, Hire, Reject…) are saved to a CSV with the resum
 **29. What did you add or change compared with the original code?**
 - Found and fixed a library-version mismatch that made all ML models silently fail.
 - Fixed a mismatch between how text was processed in training and in prediction.
-- Added a pipeline to retrain the matching model on an English dataset instead of the original Russian one.
+- Retrained the matching model on English data instead of the original Russian data: accuracy 67% → 75%, ROC-AUC 73% → 83%.
 - Fixed the screening model getting a job role it had never seen.
 - Added labels showing whether each score came from ML or a backup formula.
 - Removed skill false positives and added missing skills.

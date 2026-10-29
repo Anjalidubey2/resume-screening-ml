@@ -91,7 +91,7 @@ flowchart LR
 | 2 | Resume–Job Description Fit (Hugging Face, cnamuangtoun) | 8,000 English pairs: Good / Potential / No Fit | Matching model |
 | 3 | AI-Powered Resume Screening Dataset 2025 (Kaggle) | Candidate profiles with recruiter decision and AI score | Screening models |
 
-The original project trained the matcher on a large Russian-language dataset. Because this system screens English resumes, a pipeline was added to retrain the matcher on the English dataset 2 (see section 13).
+The original project trained the matcher on a large Russian-language dataset. Because this system screens English resumes, the matcher was retrained on the English dataset 2 (see sections 12 and 13).
 
 ## 9. Methodology
 
@@ -161,20 +161,36 @@ If a model cannot be loaded, a simple backup formula is used for that part and t
 
 ## 12. Results
 
-> Replace this table with your own numbers from `outputs/role_classifier_metrics.csv`, `outputs/matching_model_metrics.csv` and `outputs/screening_model_metrics.csv`. Charts are in `notebooks/02_model_evaluation.ipynb`.
+### 12.1 Model metrics
 
-| Model | Metric | Original project (reported) | This project (your run) |
+| Model | Metric | Original project | This project |
 |---|---|---|---|
-| Role classifier | Test accuracy / macro F1 | 71.43% / 67.07% | [ ] |
-| Matching model | Accuracy / F1 / ROC-AUC | 67.30% / 67.41% / 73.31% (Russian data) | [ ] (English data) |
-| Screening decision | Accuracy / F1 / ROC-AUC | 94.00% / 96.15% / 99.85% | [ ] |
-| AI score regressor | MAE / R² | 2.62 / 96.56% | [ ] |
+| Matching model | Accuracy / F1 / ROC-AUC | 67.30% / 67.41% / 73.31% (Russian data) | **75.17% / 76.52% / 82.61%** (English data, 1,599 unseen test pairs) |
+| Matching model | 3-fold cross-validation accuracy / F1 / ROC-AUC | — | 72.57% / 73.48% / 80.26% |
+| Role classifier | Test accuracy / macro F1 | 71.43% / 67.07% | same model (not retrained) |
+| Screening decision | Accuracy / F1 / ROC-AUC | 94.00% / 96.15% / 99.85% | same model (not retrained) |
+| AI score regressor | MAE / R² | 2.62 / 96.56% | same model (not retrained) |
+
+The matching model was retrained on 7,993 English resume–job pairs (3,994 match, 3,999 no-match), 80% for training and 20% for testing. Its metrics are in `outputs/matching_model_metrics.csv`; the classification report is in `outputs/matching_model_report.csv`. Charts can be produced with `notebooks/02_model_evaluation.ipynb`.
+
+### 12.2 Live ranking check
+
+Eight demo resumes were screened against four job descriptions on the deployed system:
+
+| Job description | Ranked #1 (score, fit level) | Gap to #2 | Accountant / HR manager rank |
+|---|---|---|---|
+| Data Scientist | Data scientist resume (71.7, Good Fit) | 15.7 | 8th / 7th |
+| ML Engineer | ML engineer resume (76.5, Good Fit) | 16.5 | 8th / 6th |
+| Full Stack Developer | Full-stack developer resume (77.3, Good Fit) | 38.8 | 8th / 6th |
+| Cybersecurity Analyst | Cybersecurity analyst resume (83.2, Good Fit) | 42.4 | 8th / 6th |
+
+After retraining, the matching model gives the right candidate a match probability of 0.90–0.96 and the accountant 0.02–0.04 (before: about 0.8 for everyone).
 
 ## 13. Improvements made in this project
 
 1. **Fixed library versions** — the trained models needed scikit-learn 1.8 and NumPy 2, but the project installed 1.3 and 1.26, so the ML silently failed and backup formulas were used.
 2. **Fixed a training/prediction mismatch** in text preprocessing.
-3. **English matching pipeline** — code to download, clean and retrain the matcher on English resume–job pairs instead of Russian ones (`retrain_models.bat`).
+3. **English matching model** — retrained on 7,993 English resume–job pairs instead of Russian ones: accuracy 67.3% → 75.2%, ROC-AUC 73.3% → 82.6%.
 4. **Correct input to the screening model** — the job role now comes from the job description, not from a 24-category guess the model had never seen.
 5. **Transparency** — every result shows whether each score came from an ML model or a backup formula.
 6. **Better skill detection** — removed false positives ("security", "iOS", "Ann", "spring") and added missing skills (SIEM, MLOps, testing, REST APIs).
