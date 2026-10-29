@@ -68,10 +68,13 @@ It turns both into character-level TF-IDF vectors, then builds features from the
 ## Scoring and evaluation
 
 **19. How is the final score calculated?**
-35% match probability + 25% skill match + 25% AI screening score + 15% role confidence. 85+ is Strong Fit, 70–84 Good Fit, 55–69 Moderate Fit, below 55 Weak Fit.
+35% match probability + 25% skill match + 25% AI screening score (multiplied by skill match) + 15% role relevance (how likely the person's field suits the job). 85+ is Strong Fit, 70–84 Good Fit, 55–69 Moderate Fit, below 55 Weak Fit.
 
 **20. Why these weights?**
 Overall resume–job match is the most direct signal, so it gets the most weight. Skills and screening are equally important. Role confidence is the least specific, so it gets the least. The weights can be changed in one place (`DEFAULT_WEIGHTS` in `recommender.py`).
+
+**20a. Why multiply the screening score by skill match?**
+When I tested the live system, an HR manager with 8 years' experience ranked second for a Data Scientist job. The screening model rewards experience and education, but it was trained only on people applying for jobs in their own field, so it had never seen a mismatch. Multiplying by skill match means "strong candidate" only counts when the person also has the job's skills. For the same reason, the role judge now counts only fields that suit the job, so being confidently "HR" doesn't help for a tech job.
 
 **21. Explain accuracy, precision, recall and F1.**
 - Accuracy: how many predictions were right overall.
@@ -97,7 +100,7 @@ FastAPI is fast, works naturally with Python ML code, and creates interactive AP
 The system uses a simple backup formula for that part and **shows a red "backup formula" label** on the result card, so the user always knows. `check_models.py` tests all models before a demo.
 
 **27. How did you test the project?**
-Automated pytest tests for skill extraction, cleaning, role mapping, ranking metrics, file parsing, storage, model loading and the API; plus manual UI testing of upload, ranking, filters, export, feedback and error messages.
+Automated pytest tests for skill extraction, cleaning, role mapping, ranking metrics, file parsing, storage, model loading and the API; plus manual UI testing of upload, ranking, filters, export, feedback and error messages. Every upload to GitHub also runs all tests automatically on GitHub Actions (Linux servers), including the ML-model tests and a check that the right candidate ranks first for each of four jobs.
 
 **28. How does the feedback loop work?**
 Recruiter clicks (Good Match, Hire, Reject…) are saved to a CSV with the resume and job text. "Retrain Prep" snapshots the current models and converts feedback into training rows. `retrain_models.bat` retrains all models and backs up the old ones first.
@@ -113,6 +116,8 @@ Recruiter clicks (Good Match, Hire, Reject…) are saved to a CSV with the resum
 - Removed skill false positives and added missing skills.
 - Made models load once (faster), added browser CSV download and synonym highlighting, fixed the projector layout.
 - Wrote automated tests, notebooks, setup/run/retrain scripts and documentation.
+- Tested the deployed system, found an HR manager ranked #2 for a Data Scientist job, and fixed the scoring (screening × skill match, job-relevant role fields).
+- Set up GitHub Actions to run every test and retrain the matcher in the cloud.
 
 **30. What would you improve next?**
 Use sentence embeddings (BERT) for better semantic matching, retrain automatically from validated feedback, move storage to a database, add login, add OCR for scanned resumes, and add fairness checks.

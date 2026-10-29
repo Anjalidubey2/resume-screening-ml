@@ -76,7 +76,7 @@ flowchart LR
 | Role classifier | `backend/services/model.py` | Predicts 1 of 24 job categories |
 | Matching model | `backend/services/matching_model.py` | Probability that a resume fits a job |
 | Screening models | `backend/services/screening_model.py` | Hire/Reject probability and AI score (0–100) |
-| Job-role mapper | `backend/services/job_roles.py` | Maps the job description to a role the screening model knows |
+| Job-role mapper | `backend/services/job_roles.py` | Maps the job description to a role the screening model knows, and scores whether a resume's field suits that job |
 | Hybrid recommender | `backend/services/recommender.py` | Combines all scores, records which model produced each one |
 | Ranking evaluation | `backend/services/evaluation.py` | MAP and NDCG ranking metrics |
 | Feedback & versions | `feedback_store.py`, `model_registry.py`, `retraining.py` | Stores feedback, snapshots models |
@@ -115,8 +115,15 @@ TF-IDF turns text into numbers. **TF** (term frequency) counts how often a word 
 ### 9.4 Hybrid score
 
 ```
-final = 35 × match probability + 25 × skill match + 25 × (AI score / 100) + 15 × role confidence
+final = 35 × match probability + 25 × skill match + 25 × (AI score / 100 × skill match) + 15 × role relevance
 ```
+
+Two adjustments came from testing the live system, where an HR manager ranked second for a Data Scientist job:
+
+- **AI score × skill match.** The screening models judge overall candidate strength (experience, education, certifications) but were trained only on people applying for jobs in their own field. Multiplying by skill match means a strong candidate only scores high when they also have the job's skills.
+- **Role relevance.** Instead of the classifier's confidence in *any* field, only the probability of fields that suit the job counts (information technology and engineering for the four tech roles). Being confidently "HR" no longer helps for a data-science job.
+
+With both changes, the matching candidate ranks first for each of the four sample job descriptions and the non-technical profiles rank in the bottom half.
 
 | Score | Fit level |
 |---|---|
@@ -147,7 +154,8 @@ If a model cannot be loaded, a simple backup formula is used for that part and t
 | Test type | What is checked | Where |
 |---|---|---|
 | Unit tests | Skill extraction and false positives, text cleaning, job-role mapping, MAP/NDCG, file parsing, feedback/CSV storage, dataset preparation | `backend/tests/` (`pytest`) |
-| Model tests | Every model loads and predicts; results come from ML not backup formulas; a relevant resume outranks an unrelated one | `backend/tests/test_models.py`, `backend/check_models.py` |
+| Model tests | Every model loads and predicts; results come from ML not backup formulas; for each of 4 jobs the matching sample resume ranks first and non-technical profiles rank in the bottom half | `backend/tests/test_models.py`, `backend/check_models.py` |
+| Continuous integration | All tests above, the model check and the frontend build run on every upload, on GitHub's Linux servers | `.github/workflows/tests.yml` |
 | API tests | Health check, upload and scoring, rejection of unsupported files | `backend/tests/test_api.py` |
 | UI tests | Upload, ranking, highlighting, filters, CSV export, feedback, dark mode, error message, projector-width layout | Manual run in the browser |
 
@@ -173,6 +181,8 @@ If a model cannot be loaded, a simple backup formula is used for that part and t
 7. **Speed** — models load once instead of on every request.
 8. **Usability** — CSV now downloads in the browser, synonym highlighting, clearer empty-filter message, layout fixed for projector screens.
 9. **Engineering** — automated tests, one-click setup / run / retrain scripts, notebooks, model backups before retraining.
+10. **Fairer hybrid score** — live testing showed an HR manager ranked second for a Data Scientist job; the screening score is now multiplied by skill match and the role judge counts only job-relevant fields (section 9.4).
+11. **Continuous integration and cloud retraining** — GitHub Actions runs every test on each upload and retrains the matcher with one click, saving the new model only if all tests pass.
 
 ## 14. Limitations
 
