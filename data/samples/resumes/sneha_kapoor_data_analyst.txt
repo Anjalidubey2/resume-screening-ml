@@ -1,0 +1,16 @@
+SNEHA KAPOOR
+Data Analyst | Delhi, India | sneha.kapoor@example.com | +91 90000 00005
+
+SUMMARY
+Data analyst with 2 years of experience building reports and dashboards for sales teams.
+
+SKILLS
+Excel, SQL, MySQL, Power BI, Tableau, Python (basic), Pandas, Statistics, Data Analysis, Communication
+
+EXPERIENCE
+Data Analyst - Contoso Retail (2024 - Present)
+- Built weekly Power BI dashboards from SQL data for 12 regional managers.
+- Automated Excel reports with Python and Pandas, saving 6 hours a week.
+
+EDUCATION
+B.Sc in Statistics - Example University (2024)

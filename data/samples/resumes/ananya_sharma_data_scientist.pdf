@@ -1,0 +1,57 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [6 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Length 2016 >>
+stream
+BT /F2 18 Tf 50 790 Td (ANANYA SHARMA) Tj ET
+BT /F1 9.5 Tf 50 777 Td (Data Scientist | Bengaluru, India | ananya.sharma@example.com | +91 90000 00001) Tj ET
+BT /F2 11 Tf 50 746 Td (SUMMARY) Tj ET
+BT /F1 9.5 Tf 50 733 Td (Data scientist with 4 years of experience turning messy data into production machine learning models.) Tj ET
+BT /F1 9.5 Tf 50 720 Td (Strong in Python, SQL, NLP and model evaluation; comfortable presenting insights to business stakeholders.) Tj ET
+BT /F2 11 Tf 50 689 Td (SKILLS) Tj ET
+BT /F1 9.5 Tf 50 676 Td (Python, SQL, PostgreSQL, Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch, NLP, Machine Learning,) Tj ET
+BT /F1 9.5 Tf 50 663 Td (Statistics, Data Visualization \(Matplotlib, Seaborn\), FastAPI, Docker, AWS \(S3, EC2\), Azure, MLflow, Git) Tj ET
+BT /F2 11 Tf 50 632 Td (EXPERIENCE) Tj ET
+BT /F1 9.5 Tf 50 619 Td (Data Scientist - Northwind Analytics \(2022 - Present\)) Tj ET
+BT /F1 9.5 Tf 50 606 Td (- Built a customer churn model with scikit-learn that reduced churn by 12%.) Tj ET
+BT /F1 9.5 Tf 50 593 Td (- Developed an NLP pipeline that classifies 50,000 support tickets every month.) Tj ET
+BT /F1 9.5 Tf 50 580 Td (- Served models through REST APIs with FastAPI and Docker on AWS; tracked experiments in MLflow.) Tj ET
+BT /F1 9.5 Tf 50 567 Td (Junior Data Analyst - Contoso Retail \(2020 - 2022\)) Tj ET
+BT /F1 9.5 Tf 50 554 Td (- Wrote SQL queries and Pandas reports for sales forecasting and built dashboards for managers.) Tj ET
+BT /F2 11 Tf 50 523 Td (EDUCATION) Tj ET
+BT /F1 9.5 Tf 50 510 Td (B.Tech in Computer Science - Example Institute of Technology \(2020\)) Tj ET
+BT /F2 11 Tf 50 479 Td (CERTIFICATIONS) Tj ET
+BT /F1 9.5 Tf 50 466 Td (AWS Certified Machine Learning - Specialty; Google Data Analytics Certificate) Tj ET
+BT /F2 11 Tf 50 435 Td (PROJECTS) Tj ET
+BT /F1 9.5 Tf 50 422 Td (Resume classifier with TF-IDF and Linear SVM; sentiment analysis of product reviews with BERT;) Tj ET
+BT /F1 9.5 Tf 50 409 Td (movie recommender using collaborative filtering.) Tj ET
+endstream
+endobj
+6 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 5 0 R >>
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000314 00000 n 
+0000002382 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+2518
+%%EOF

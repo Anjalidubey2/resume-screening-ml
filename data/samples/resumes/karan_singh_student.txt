@@ -1,0 +1,18 @@
+KARAN SINGH
+Final-year B.Tech student | Jaipur, India | karan.singh@example.com | +91 90000 00006
+
+SUMMARY
+Computer science student interested in machine learning, looking for an entry-level role.
+
+SKILLS
+Python, Machine Learning, Scikit-learn, Pandas, NumPy, SQL, Git, HTML
+
+INTERNSHIP
+ML Intern - Example Startup (3 months, 2026)
+- Cleaned data with Pandas and trained regression models with scikit-learn.
+
+PROJECTS
+House price prediction with linear regression; simple NLP chatbot for college FAQs.
+
+EDUCATION
+B.Tech in Computer Science (expected 2027) - Example Institute of Technology
