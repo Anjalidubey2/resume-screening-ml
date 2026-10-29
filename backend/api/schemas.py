@@ -2,7 +2,7 @@
 
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class RankingEvaluationRequest(BaseModel):
@@ -86,6 +86,9 @@ class HybridRecommendationRequest(BaseModel):
 
 
 class HybridRecommendationResponse(BaseModel):
+    # "model_sources" starts with Pydantic's reserved "model_" prefix; allow it on purpose.
+    model_config = ConfigDict(protected_namespaces=())
+
     final_score: float
     fit_level: str
     role_predictions: list[RolePredictionItem]
