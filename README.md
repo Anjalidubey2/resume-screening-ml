@@ -8,9 +8,17 @@ Built with **Python, scikit-learn, FastAPI and React**.
 
 > Based on [Dibya-del/resume-screening-ml](https://github.com/Dibya-del/resume-screening-ml), extended and fixed by **[Your Name]** as a college major project — see [What I improved](#what-i-improved).
 
-<!-- Add screenshots to docs/screenshots/ and uncomment:
-![Dashboard](docs/screenshots/dashboard.png)
--->
+**Live demo:** [resume-screening-ml-seven.vercel.app](https://resume-screening-ml-seven.vercel.app) · **API docs:** [resume-screening-ml-ydas.onrender.com/docs](https://resume-screening-ml-ydas.onrender.com/docs)
+<sub>Hosted on free plans — if the page says "Connecting…", the server is waking up (up to a minute).</sub>
+
+![Dashboard: eight resumes ranked for a Data Scientist job, with the score breakdown, skill charts and ML-model labels](docs/screenshots/dashboard.jpg)
+
+<details>
+<summary>Dark mode, with matched skills (and their synonyms) highlighted in the resume</summary>
+
+![Dark mode with highlighted resume preview](docs/screenshots/dashboard-dark.jpg)
+
+</details>
 
 ## Features
 
