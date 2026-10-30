@@ -193,7 +193,9 @@ const FEEDBACK_ACTIONS = [
 
 function ResultCard({ result, rank, onFeedback, feedbackStatus }) {
   const matchPercent = Math.round((result.skill_match_score || 0) * 100);
-  const topRole = result.role_predictions?.[0]?.role || "Unknown";
+  // Show the classifier's confidence so a weak guess (e.g. "banking (9%)" for a data scientist) reads as one.
+  const topPrediction = result.role_predictions?.[0];
+  const topRole = topPrediction ? `${topPrediction.role} (${formatPercent(topPrediction.confidence)})` : "unknown";
 
   return (
     <article className="result-card">
@@ -202,7 +204,7 @@ function ResultCard({ result, rank, onFeedback, feedbackStatus }) {
           <span className="rank">#{rank}</span>
           <h3>{result.filename}</h3>
           <p>
-            {result.fit_level} · top role: {topRole}
+            {result.fit_level} · field guess: {topRole}
             {result.screening_role && <> · screened as: {result.screening_role}</>}
           </p>
         </div>
