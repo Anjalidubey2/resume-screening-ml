@@ -68,6 +68,9 @@ A Linear SVM only gives a raw score, not a probability. Calibration (CalibratedC
 **18. How does the matching model compare a resume with a job?**
 It turns both into character-level TF-IDF vectors, then builds features from them: how similar they are (cosine similarity), their lengths, where they differ and where they overlap. Logistic Regression learns from those features which pairs were judged a fit.
 
+**18a. Why does a data scientist's card say "field guess: banking (9%)"?**
+The role classifier was trained on a dataset with 24 job fields (HR, Teacher, Banking, Information Technology…), and "Data Science" isn't one of them. So for a data scientist it can only make a weak guess; 9% means it's very unsure. That's exactly why the role judge has the smallest weight (15%) and, for tech jobs, only counts the probability of relevant fields (IT and engineering) rather than whatever the top guess is. Adding a data-science category to the training data is listed as future work.
+
 ## Scoring and evaluation
 
 **19. How is the final score calculated?**

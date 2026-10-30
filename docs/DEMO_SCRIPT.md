@@ -27,6 +27,8 @@
 4. On the top card, explain:
    - **Score out of 100** and the fit level (Strong / Good / Moderate / Weak).
    - Blue labels **"Role / Match / Screening: ML model"** — every score came from a trained model.
+   - **"Score built from: Match + Skills + Screening + Role"** — how the four judges add up to the final score.
+   - **"field guess: banking (9%)"** — the role classifier's best guess among its 24 fields. Data science isn't one of them, so the guess is weak (see VIVA_QA question 18a).
    - **Pie chart** = skill match; **bars** = matched / missing / extra skills.
    - **Green chips** = skills the job needs and the candidate has; **orange** = missing.
    - Open **"Resume preview"** → matched skills are highlighted, including synonyms (PostgreSQL counts as SQL).
